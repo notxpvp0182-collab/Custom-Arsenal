@@ -5,12 +5,16 @@ on:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Repository
@@ -21,15 +25,13 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Mod JAR with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --no-daemon
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -45,11 +47,7 @@ jobs:
         with:
           tag_name: v2.0.${{ github.run_number }}
           name: "Custom Arsenal v2.0.${{ github.run_number }} (MC 1.21.11)"
-          body: |
-            ### Custom Arsenal — Automated Release Build #${{ github.run_number }}
-            - **Developer**: Ahmed
-            - **Minecraft Version**: 1.21.11 (Fabric)
-            - **Features**: 42+ Custom Weapons/Items, Multi-Trigger Abilities (Shift+LMB, RMB, Shift+RMB, Universal R Ultimate), 10 Elements, Responsive Config & Keybind GUI, Bundled 3D Models & 32x32 HD Textures.
+          body: "Automated Release Build #${{ github.run_number }} for Minecraft 1.21.11 Fabric."
           files: |
             build/libs/*.jar
             !build/libs/*-sources.jar
