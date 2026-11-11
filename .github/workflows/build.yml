@@ -1,9 +1,12 @@
-name: Build Custom Arsenal JAR
+name: Build & Release Custom Arsenal JAR
 
 on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -28,7 +31,7 @@ jobs:
       - name: Build Mod JAR with Gradle
         run: ./gradlew build
 
-      - name: Upload Built Mod JAR
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Custom-Arsenal-Mod-JAR
@@ -36,3 +39,20 @@ jobs:
             build/libs/*.jar
             !build/libs/*-sources.jar
             !build/libs/*-dev.jar
+
+      - name: Create Automatic GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.0.${{ github.run_number }}
+          name: "Custom Arsenal v2.0.${{ github.run_number }} (MC 1.21.11)"
+          body: |
+            ### Custom Arsenal — Automated Release Build #${{ github.run_number }}
+            - **Developer**: Ahmed
+            - **Minecraft Version**: 1.21.11 (Fabric)
+            - **Features**: 42+ Custom Weapons/Items, Multi-Trigger Abilities (Shift+LMB, RMB, Shift+RMB, Universal R Ultimate), 10 Elements, Responsive Config & Keybind GUI, Bundled 3D Models & 32x32 HD Textures.
+          files: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+            !build/libs/*-dev.jar
+          draft: false
+          prerelease: false

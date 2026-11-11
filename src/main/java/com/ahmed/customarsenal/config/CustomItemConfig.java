@@ -5,6 +5,7 @@ import com.ahmed.customarsenal.ability.ActivationHand;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -19,17 +20,38 @@ public class CustomItemConfig {
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("custom_arsenal.json");
     private static CustomItemConfig INSTANCE = new CustomItemConfig();
 
-    public boolean enableCustomParticles = true;
-    public float particleIntensity = 1.0f; // 0.25f to 2.0f
+    // GENERAL
+    public boolean enableCustomArsenal = true;
+    public boolean enableCustomItemEffects = true;
     public boolean enableCustomSounds = true;
+
+    // ABILITY
+    public boolean showCooldownIndicators = true;
     public boolean enableAbilityVisualEffects = true;
     public boolean enableAbilityAnimations = true;
-    public boolean showCooldownIndicators = true;
-    public boolean enableCustom3DRendering = true;
 
-    // Ability ID -> Override ActivationHand name ("MAIN_HAND", "OFF_HAND", "BOTH")
+    // KEYBINDS (Stored inside Mod Menu Config instead of Vanilla Controls)
+    public int universalAbilityKey = GLFW.GLFW_KEY_R;
+    public int secondaryAbilityKey = GLFW.GLFW_KEY_G;
+    public int utilityAbilityKey = GLFW.GLFW_KEY_V;
+    public int openInventoryKey = GLFW.GLFW_KEY_I;
+
+    // PARTICLES
+    public boolean enableCustomParticles = true;
+    public float particleIntensity = 1.0f;
+    public float particleDensity = 1.0f;
+    public boolean reducedParticles = false;
+
+    // RENDERING
+    public boolean enableCustom3DRendering = true;
+    public boolean highQualityEffects = true;
+
+    // PERFORMANCE
+    public boolean performanceMode = false;
+    public boolean reducedAnimationQuality = false;
+    public int effectDistance = 48;
+
     public Map<String, String> activationHandOverrides = new HashMap<>();
-    // Ability ID -> enabled state
     public Map<String, Boolean> abilityEnabledStates = new HashMap<>();
 
     public static CustomItemConfig get() {
@@ -71,6 +93,15 @@ public class CustomItemConfig {
     }
 
     public boolean isAbilityEnabled(String abilityId) {
-        return abilityEnabledStates.getOrDefault(abilityId, true);
+        return enableCustomArsenal && abilityEnabledStates.getOrDefault(abilityId, true);
+    }
+
+    public float getEffectiveParticleMultiplier() {
+        if (!enableCustomParticles || !enableCustomItemEffects) return 0.0f;
+        float mult = particleIntensity * particleDensity;
+        if (reducedParticles || performanceMode) {
+            mult *= 0.4f;
+        }
+        return Math.clamp(mult, 0.1f, 2.5f);
     }
 }

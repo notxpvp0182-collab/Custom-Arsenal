@@ -3,7 +3,7 @@
   "id": "custom_arsenal",
   "version": "${version}",
   "name": "Custom Arsenal",
-  "description": "Standalone custom weapons, 3D models, elements, contextual abilities, and custom inventory framework.",
+  "description": "Premium custom weapons, 3D models, elements, multi-trigger abilities, and custom inventory framework.",
   "authors": [
     "Ahmed"
   ],
@@ -18,6 +18,9 @@
     ],
     "client": [
       "com.ahmed.customarsenal.client.CustomArsenalClient"
+    ],
+    "modmenu": [
+      "com.ahmed.customarsenal.client.gui.ModMenuIntegration"
     ]
   },
   "depends": {
