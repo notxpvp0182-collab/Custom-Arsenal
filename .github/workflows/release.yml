@@ -1,20 +1,16 @@
-name: Build & Release Custom Arsenal JAR
+name: Fast Release JAR
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
+  build-jar:
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout Repository
@@ -27,22 +23,13 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Grant execute permission for gradlew
+      - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build Mod JAR with Gradle
+      - name: Build Mod JAR
         run: ./gradlew build --no-daemon
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Custom-Arsenal-Mod-JAR
-          path: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-dev.jar
-
-      - name: Create Automatic GitHub Release
+      - name: Publish Automatic GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v2.0.${{ github.run_number }}
