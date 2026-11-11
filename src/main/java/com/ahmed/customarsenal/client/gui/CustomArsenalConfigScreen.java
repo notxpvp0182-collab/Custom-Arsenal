@@ -27,7 +27,6 @@ public class CustomArsenalConfigScreen extends Screen {
         int centerX = this.width / 2;
         int topY = 32;
 
-        // Visual & Performance Toggles
         this.addRenderableWidget(Button.builder(
                 Component.literal("Custom Particles: " + (cfg.enableCustomParticles ? "ON" : "OFF")),
                 btn -> {
@@ -70,7 +69,6 @@ public class CustomArsenalConfigScreen extends Screen {
                     btn.setMessage(Component.literal("3D Model Rendering: " + (cfg.enableCustom3DRendering ? "ON" : "OFF")));
                 }).bounds(centerX + 5, topY + 48, 150, 20).build());
 
-        // Per-Ability Activation Hand & Toggle Controls
         List<CustomAbility> abilities = new ArrayList<>(AbilityRegistry.getAll());
         int startIdx = abilityPageOffset * 4;
         for (int i = 0; i < 4 && (startIdx + i) < abilities.size(); i++) {
@@ -94,7 +92,6 @@ public class CustomArsenalConfigScreen extends Screen {
                     }).bounds(centerX + 65, rowY, 90, 20).build());
         }
 
-        // Page Navigation for Abilities
         this.addRenderableWidget(Button.builder(Component.literal("< Prev Abilities"), btn -> {
             if (abilityPageOffset > 0) {
                 abilityPageOffset--;
@@ -109,7 +106,6 @@ public class CustomArsenalConfigScreen extends Screen {
             }
         }).bounds(centerX + 55, this.height - 52, 100, 20).build());
 
-        // Save & Close
         this.addRenderableWidget(Button.builder(Component.literal("Save & Done"), btn -> {
             CustomItemConfig.save();
             this.minecraft.setScreen(this.parent);
@@ -118,8 +114,8 @@ public class CustomArsenalConfigScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 12, 0xFFFFFF);
+        graphics.fill(0, 0, this.width, this.height, 0xC0101010);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 12, 0xFFFFFFFF);
         graphics.drawCenteredString(this.font, "Contextual Ability Hand & Toggle Settings (Keybinds in Options -> Controls -> Custom Arsenal)",
                 this.width / 2, 106, 0xFFAAAAAA);
         super.render(graphics, mouseX, mouseY, partialTick);

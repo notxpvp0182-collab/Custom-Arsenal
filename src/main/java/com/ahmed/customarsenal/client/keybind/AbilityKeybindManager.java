@@ -1,5 +1,6 @@
 package com.ahmed.customarsenal.client.keybind;
 
+import com.ahmed.customarsenal.CustomArsenalMod;
 import com.ahmed.customarsenal.ability.AbilityCooldownManager;
 import com.ahmed.customarsenal.ability.AbilityManager;
 import com.ahmed.customarsenal.client.gui.CustomInventoryScreen;
@@ -16,13 +17,13 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Optional;
 
 public final class AbilityKeybindManager {
-    public static final String CATEGORY = "key.categories.custom_arsenal";
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(CustomArsenalMod.id("keys"));
 
-    public static KeyMapping ABILITY_SLOT_1; // Default R
-    public static KeyMapping ABILITY_SLOT_2; // Default G
-    public static KeyMapping ABILITY_SLOT_3; // Default V
-    public static KeyMapping SHIELD_ABILITY; // Default C
-    public static KeyMapping OPEN_CUSTOM_INVENTORY; // Default I
+    public static KeyMapping ABILITY_SLOT_1;
+    public static KeyMapping ABILITY_SLOT_2;
+    public static KeyMapping ABILITY_SLOT_3;
+    public static KeyMapping SHIELD_ABILITY;
+    public static KeyMapping OPEN_CUSTOM_INVENTORY;
 
     public static void init() {
         ABILITY_SLOT_1 = KeyBindingHelper.registerKeyBinding(new KeyMapping(
@@ -86,7 +87,6 @@ public final class AbilityKeybindManager {
 
     private static void handleContextualKeyPress(Minecraft client, String keySlot) {
         Optional<AbilityManager.ResolvedAbility> resolvedOpt = AbilityManager.resolveContextualAbility(client.player, keySlot);
-        // If no compatible custom item is held in the required hand, do nothing at all!
         if (resolvedOpt.isEmpty()) {
             return;
         }

@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,7 +16,7 @@ public record CustomElement(
         int primaryColor,
         ChatFormatting chatColor,
         ParticleOptions particle,
-        ResourceLocation soundId,
+        Identifier soundId,
         Holder<MobEffect> hitStatusEffect,
         int effectDurationTicks,
         float bonusElementalDamage,

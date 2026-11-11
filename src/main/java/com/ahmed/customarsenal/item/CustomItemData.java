@@ -2,7 +2,7 @@ package com.ahmed.customarsenal.item;
 
 import com.ahmed.customarsenal.ability.CustomAbility;
 import com.ahmed.customarsenal.element.CustomElement;
-import net.minecraft.world.core.Holder;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Rarity;
 

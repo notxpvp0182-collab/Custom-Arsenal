@@ -20,18 +20,11 @@ public final class AbilityManager {
 
     public record ResolvedAbility(CustomAbility ability, InteractionHand hand, ItemStack stack, CustomItem item) {}
 
-    /**
-     * Contextually resolves which ability should activate for the given player and keySlot ("slot_1", "slot_2", "slot_3", "shield").
-     * Strictly checks MAIN_HAND first, then OFF_HAND, and verifies that the item's unique internal ID owns the ability
-     * and that the ability's ActivationHand setting allows that hand.
-     */
     public static Optional<ResolvedAbility> resolveContextualAbility(Player player, String keySlot) {
-        // 1. Check Main Hand
         Optional<ResolvedAbility> mainMatch = checkHand(player, InteractionHand.MAIN_HAND, keySlot);
         if (mainMatch.isPresent()) {
             return mainMatch;
         }
-        // 2. Check Offhand
         return checkHand(player, InteractionHand.OFF_HAND, keySlot);
     }
 
@@ -52,15 +45,11 @@ public final class AbilityManager {
         return Optional.empty();
     }
 
-    /**
-     * Authoritative server-side execution of a contextual ability.
-     */
     public static void tryExecuteServer(ServerPlayer player, String itemId, String abilityId, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.isEmpty() || !(stack.getItem() instanceof CustomItem customItem)) {
             return;
         }
-        // Verify unique internal item ID matches
         if (!customItem.getCustomData().id().equals(itemId)) {
             return;
         }
@@ -68,12 +57,13 @@ public final class AbilityManager {
         if (ability == null || !CustomItemConfig.get().isAbilityEnabled(ability.id())) {
             return;
         }
-        // Verify ActivationHand rule
         if (!ability.getEffectiveHand().matches(hand)) {
             return;
         }
 
-        ServerLevel level = player.serverLevel();
+        if (!(player.level() instanceof ServerLevel level)) {
+            return;
+        }
         long now = level.getGameTime();
         if (AbilityCooldownManager.isOnCooldown(player.getUUID(), ability.id(), now)) {
             long remTicks = AbilityCooldownManager.getRemainingTicks(player.getUUID(), ability.id(), now);

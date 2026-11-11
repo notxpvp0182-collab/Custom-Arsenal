@@ -8,7 +8,7 @@
     "Ahmed"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/"
+    "homepage": "https://github.com/notxpvp0182-collab/Custom-Arsenal"
   },
   "license": "MIT",
   "environment": "*",
@@ -18,15 +18,15 @@
     ],
     "client": [
       "com.ahmed.customarsenal.client.CustomArsenalClient"
-    ],
-    "modmenu": [
-      "com.ahmed.customarsenal.client.gui.ModMenuIntegration"
     ]
   },
   "depends": {
-    "fabricloader": ">=0.18.1",
+    "fabricloader": "*",
     "minecraft": "~1.21.11",
     "java": ">=21",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }

@@ -23,7 +23,7 @@ public final class ElementRegistry {
     public static final CustomElement ICE = register(new CustomElement(
             "ice", "Ice", 0x66CCFF, ChatFormatting.AQUA,
             ParticleTypes.SNOWFLAKE, CustomSoundManager.FROST_WAVE_ID,
-            MobEffects.MOVEMENT_SLOWDOWN, 80, 1.5f, 1.0f
+            MobEffects.SLOWNESS, 80, 1.5f, 1.0f
     ));
 
     public static final CustomElement LIGHTNING = register(new CustomElement(
@@ -35,13 +35,13 @@ public final class ElementRegistry {
     public static final CustomElement WIND = register(new CustomElement(
             "wind", "Wind", 0xAAFFCC, ChatFormatting.GREEN,
             ParticleTypes.CLOUD, CustomSoundManager.WIND_DASH_ID,
-            MobEffects.MOVEMENT_SPEED, 60, 1.0f, 0.85f
+            MobEffects.SPEED, 60, 1.0f, 0.85f
     ));
 
     public static final CustomElement EARTH = register(new CustomElement(
             "earth", "Earth", 0x8B5A2B, ChatFormatting.DARK_GREEN,
             ParticleTypes.CRIT, CustomSoundManager.GUARDIAN_BARRIER_ID,
-            MobEffects.DAMAGE_RESISTANCE, 80, 2.0f, 1.1f
+            MobEffects.RESISTANCE, 80, 2.0f, 1.1f
     ));
 
     public static final CustomElement WATER = register(new CustomElement(
@@ -106,6 +106,5 @@ public final class ElementRegistry {
     }
 
     public static void init() {
-        // Static fields initialize all 10 elements
     }
 }

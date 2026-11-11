@@ -2,8 +2,8 @@ package com.ahmed.customarsenal.item;
 
 import com.ahmed.customarsenal.ability.CustomAbility;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -14,9 +14,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.ItemLore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomItem extends Item {
@@ -43,6 +44,39 @@ public class CustomItem extends Item {
                     .build();
             props.attributes(modifiers);
         }
+
+        // Build rich lore & contextual ability lines via 1.21.11 DataComponents.LORE
+        List<Component> loreLines = new ArrayList<>();
+        loreLines.add(Component.literal("Element: ")
+                .withStyle(ChatFormatting.GRAY)
+                .append(Component.literal(data.element().displayName()).withStyle(data.element().chatColor())));
+        loreLines.add(Component.literal("Category: " + data.category().getDisplayName())
+                .withStyle(ChatFormatting.DARK_GRAY));
+
+        for (String line : data.lore()) {
+            loreLines.add(Component.literal(line).withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+        }
+
+        if (!data.abilities().isEmpty()) {
+            loreLines.add(Component.empty());
+            loreLines.add(Component.literal("Contextual Abilities:").withStyle(ChatFormatting.GOLD));
+            for (CustomAbility ability : data.abilities()) {
+                String defaultKey = switch (ability.keySlot()) {
+                    case "slot_1" -> "R";
+                    case "slot_2" -> "G";
+                    case "slot_3" -> "V";
+                    case "shield" -> "C";
+                    default -> "R";
+                };
+                float cdSec = ability.getEffectiveCooldownTicks() / 20.0f;
+                loreLines.add(Component.literal(" [" + defaultKey + "] " + ability.displayName())
+                        .withStyle(ChatFormatting.YELLOW)
+                        .append(Component.literal(" (" + String.format("%.1fs", cdSec) + " | " + ability.defaultHand().getDisplayName() + ")")
+                                .withStyle(ChatFormatting.DARK_GRAY)));
+                loreLines.add(Component.literal("   " + ability.description()).withStyle(ChatFormatting.GRAY));
+            }
+        }
+        props.component(DataComponents.LORE, new ItemLore(loreLines));
         return props;
     }
 
@@ -56,56 +90,21 @@ public class CustomItem extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (customData.element() != null) {
             customData.element().applyElementalHit(target, attacker);
         }
         if (customData.maxDurability() > 0) {
             stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         }
-        return true;
     }
 
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
         super.inventoryTick(stack, level, entity, slot);
-        // Lightweight check: only apply passive effect once every 40 ticks (2 seconds) when held in main/offhand
         if (customData.passiveHeldEffect() != null && (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND)) {
             if (level.getGameTime() % 40L == 0L && entity instanceof LivingEntity living) {
                 living.addEffect(new MobEffectInstance(customData.passiveHeldEffect(), 65, 0, true, false, true));
-            }
-        }
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.literal("Element: ")
-                .withStyle(ChatFormatting.GRAY)
-                .append(Component.literal(customData.element().displayName()).withStyle(customData.element().chatColor())));
-        tooltip.add(Component.literal("Category: " + customData.category().getDisplayName())
-                .withStyle(ChatFormatting.DARK_GRAY));
-
-        for (String line : customData.lore()) {
-            tooltip.add(Component.literal(line).withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
-        }
-
-        if (!customData.abilities().isEmpty()) {
-            tooltip.add(Component.empty());
-            tooltip.add(Component.literal("Contextual Abilities:").withStyle(ChatFormatting.GOLD));
-            for (CustomAbility ability : customData.abilities()) {
-                String defaultKey = switch (ability.keySlot()) {
-                    case "slot_1" -> "R";
-                    case "slot_2" -> "G";
-                    case "slot_3" -> "V";
-                    case "shield" -> "C";
-                    default -> "R";
-                };
-                float cdSec = ability.getEffectiveCooldownTicks() / 20.0f;
-                tooltip.add(Component.literal(" [" + defaultKey + "] " + ability.displayName())
-                        .withStyle(ChatFormatting.YELLOW)
-                        .append(Component.literal(" (" + String.format("%.1fs", cdSec) + " | " + ability.getEffectiveHand().getDisplayName() + ")")
-                                .withStyle(ChatFormatting.DARK_GRAY)));
-                tooltip.add(Component.literal("   " + ability.description()).withStyle(ChatFormatting.GRAY));
             }
         }
     }

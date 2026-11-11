@@ -7,8 +7,8 @@ import com.ahmed.customarsenal.util.AssetValidator;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -18,7 +18,6 @@ import java.util.*;
 public final class CustomItemRegistry {
     private static final Map<String, CustomItem> ITEMS = new LinkedHashMap<>();
 
-    // 1. Shadow Sword
     public static final CustomItem SHADOW_SWORD = register(new CustomItemData(
             "shadow_sword",
             "Shadow Sword",
@@ -31,7 +30,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.SHADOW_DASH, AbilityRegistry.SHADOW_STRIKE, AbilityRegistry.SHADOW_TELEPORT)
     ));
 
-    // 2. Inferno Sword
     public static final CustomItem INFERNO_SWORD = register(new CustomItemData(
             "inferno_sword",
             "Inferno Sword",
@@ -44,7 +42,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.FIRE_SLASH)
     ));
 
-    // 3. Frost Blade
     public static final CustomItem FROST_BLADE = register(new CustomItemData(
             "frost_blade",
             "Frost Blade",
@@ -57,7 +54,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.FROST_WAVE)
     ));
 
-    // 4. Thunder Staff
     public static final CustomItem THUNDER_STAFF = register(new CustomItemData(
             "thunder_staff",
             "Thunder Staff",
@@ -70,7 +66,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.LIGHTNING_STRIKE)
     ));
 
-    // 5. Void Orb
     public static final CustomItem VOID_ORB = register(new CustomItemData(
             "void_orb",
             "Void Orb",
@@ -83,7 +78,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.VOID_PULSE)
     ));
 
-    // 6. Guardian Shield
     public static final CustomItem GUARDIAN_SHIELD = register(new CustomItemData(
             "guardian_shield",
             "Guardian Shield",
@@ -92,11 +86,10 @@ public final class CustomItemRegistry {
             CustomItemCategory.SHIELDS,
             ElementRegistry.EARTH,
             4.5, 1.0, 2200, 1,
-            MobEffects.DAMAGE_RESISTANCE,
+            MobEffects.RESISTANCE,
             List.of(AbilityRegistry.GUARDIAN_BARRIER)
     ));
 
-    // 7. Grappling Hook
     public static final CustomItem GRAPPLING_HOOK = register(new CustomItemData(
             "grappling_hook",
             "Grappling Hook",
@@ -109,7 +102,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.GRAPPLE)
     ));
 
-    // 8. Wind Blade
     public static final CustomItem WIND_BLADE = register(new CustomItemData(
             "wind_blade",
             "Wind Blade",
@@ -118,11 +110,10 @@ public final class CustomItemRegistry {
             CustomItemCategory.WEAPONS,
             ElementRegistry.WIND,
             7.5, 2.0, 1400, 1,
-            MobEffects.MOVEMENT_SPEED,
+            MobEffects.SPEED,
             List.of(AbilityRegistry.WIND_DASH)
     ));
 
-    // 9. Poison Dagger
     public static final CustomItem POISON_DAGGER = register(new CustomItemData(
             "poison_dagger",
             "Poison Dagger",
@@ -135,7 +126,6 @@ public final class CustomItemRegistry {
             List.of(AbilityRegistry.POISON_STRIKE)
     ));
 
-    // 10. Light Staff
     public static final CustomItem LIGHT_STAFF = register(new CustomItemData(
             "light_staff",
             "Light Staff",
@@ -156,9 +146,8 @@ public final class CustomItemRegistry {
             CustomArsenalMod.LOGGER.error("Duplicate CustomItem ID '{}' prevented!", data.id());
             return ITEMS.get(data.id());
         }
-        ResourceLocation id = CustomArsenalMod.id(data.id());
+        Identifier id = CustomArsenalMod.id(data.id());
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id);
-        // Critical in 1.21.2 - 1.21.11: setId(key) on Item.Properties before constructing Item
         Item.Properties props = new Item.Properties().setId(key);
         CustomItem item = new CustomItem(data, props);
         Registry.register(BuiltInRegistries.ITEM, key, item);
@@ -179,6 +168,5 @@ public final class CustomItemRegistry {
     }
 
     public static void init() {
-        // Triggers static registration of all 10 items
     }
 }

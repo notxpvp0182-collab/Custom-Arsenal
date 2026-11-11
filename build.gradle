@@ -1,3 +1,6 @@
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+
 plugins {
     id 'fabric-loom' version "${loom_version}"
     id 'maven-publish'
@@ -12,7 +15,6 @@ base {
 
 repositories {
     mavenCentral()
-    maven { url = "https://maven.terraformersmc.com/releases/" }
 }
 
 dependencies {
@@ -20,13 +22,119 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
 
-    // Optional Mod Menu integration
-    modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+tasks.register('generateBundledAssets') {
+    doLast {
+        def baseDir = file("src/main/resources/assets/custom_arsenal")
+        def itemsDir = new File(baseDir, "items")
+        def modelsDir = new File(baseDir, "models/item")
+        def texturesDir = new File(baseDir, "textures/item")
+        itemsDir.mkdirs()
+        modelsDir.mkdirs()
+        texturesDir.mkdirs()
+
+        def specs = [
+            "shadow_sword":    ["template_3d_blade",  [0x1B082C, 0x551A8B, 0xA040FF, 0xD896FF]],
+            "inferno_sword":   ["template_3d_blade",  [0x3A0B00, 0xB82800, 0xFF6600, 0xFFDD44]],
+            "frost_blade":     ["template_3d_blade",  [0x0A2540, 0x1E78B4, 0x66CCFF, 0xE0F7FF]],
+            "thunder_staff":   ["template_3d_staff",  [0x2E2400, 0x997A00, 0xFFDD00, 0xFFFFFF]],
+            "void_orb":        ["template_3d_orb",    [0x0B0014, 0x2B0040, 0x7A1FA2, 0xE1BEE7]],
+            "guardian_shield": ["template_3d_shield", [0x2D1E12, 0x5C4028, 0x8B5A2B, 0xCCA662]],
+            "grappling_hook":  ["template_3d_blade",  [0x222629, 0x545D63, 0x8C9BA5, 0xD0DDE6]],
+            "wind_blade":      ["template_3d_blade",  [0x0D3322, 0x268C5C, 0x66E6A3, 0xE6FFF2]],
+            "poison_dagger":   ["template_3d_blade",  [0x0D290D, 0x1F661F, 0x33CC33, 0xB3FFB3]],
+            "light_staff":     ["template_3d_staff",  [0x4D3D00, 0xB38F00, 0xFFEE66, 0xFFFFFF]]
+        ]
+
+        specs.each { id, data ->
+            def tmpl = data[0]
+            def palette = data[1]
+
+            new File(itemsDir, "${id}.json").text = """{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": ["gui", "fixed"],
+        "model": {
+          "type": "minecraft:model",
+          "model": "custom_arsenal:item/${id}_gui"
+        }
+      },
+      {
+        "when": ["ground"],
+        "model": {
+          "type": "minecraft:model",
+          "model": "custom_arsenal:item/${id}_ground"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "custom_arsenal:item/${id}_3d"
+    }
+  }
+}"""
+
+            new File(modelsDir, "${id}_gui.json").text = """{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "custom_arsenal:item/${id}"
+  }
+}"""
+
+            def model3d = """{
+  "parent": "custom_arsenal:item/${tmpl}",
+  "textures": {
+    "layer0": "custom_arsenal:item/${id}"
+  }
+}"""
+            new File(modelsDir, "${id}_3d.json").text = model3d
+            new File(modelsDir, "${id}_ground.json").text = model3d
+
+            def pngFile = new File(texturesDir, "${id}.png")
+            if (!pngFile.exists()) {
+                BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
+                boolean isOrb = id.contains("orb")
+                boolean isShield = id.contains("shield")
+                for (int y = 0; y < 16; y++) {
+                    for (int x = 0; x < 16; x++) {
+                        if (isOrb) {
+                            double dist = Math.hypot(x - 7.5d, y - 7.5d)
+                            if (dist <= 6.2d) {
+                                int idx = dist < 2.2d ? 3 : (dist < 4.0d ? 2 : (dist < 5.3d ? 1 : 0))
+                                img.setRGB(x, y, (0xFF << 24) | (palette[idx] as int))
+                            }
+                        } else if (isShield) {
+                            if (x >= 2 && x <= 13 && y >= 1 && y <= 14 && (y < 10 || (x - 2 >= (y - 9) && 13 - x >= (y - 9)))) {
+                                boolean border = (x == 2 || x == 13 || y == 1 || y == 14)
+                                boolean cross = (x == 7 || x == 8 || y == 7)
+                                int color = border ? palette[0] : (cross ? palette[3] : palette[2])
+                                img.setRGB(x, y, (0xFF << 24) | color)
+                            }
+                        } else {
+                            int diag = (15 - y) - x
+                            if (x <= 4 && y >= 11 && Math.abs(diag) <= 1) {
+                                img.setRGB(x, y, (0xFF << 24) | (palette[0] as int))
+                            } else if (x >= 2 && x <= 6 && y >= 9 && y <= 13 && (x + (15 - y) == 6 || x + (15 - y) == 7)) {
+                                img.setRGB(x, y, (0xFF << 24) | (palette[3] as int))
+                            } else if (x >= 4 && y <= 11 && Math.abs(diag) <= 1) {
+                                int color = (diag == 0) ? palette[3] : palette[2]
+                                img.setRGB(x, y, (0xFF << 24) | color)
+                            }
+                        }
+                    }
+                }
+                ImageIO.write(img, "PNG", pngFile)
+            }
+        }
+    }
 }
 
 processResources {
+    dependsOn generateBundledAssets
     inputs.property "version", project.version
     filesMatching("fabric.mod.json") {
         expand "version": inputs.properties.version
