@@ -1,0 +1,293 @@
+{
+  "credit": "Custom Arsenal by Ahmed",
+  "textures": {
+    "particle": "#layer0"
+  },
+  "elements": [
+    {
+      "name": "shaft",
+      "from": [
+        7.35,
+        0,
+        7.35
+      ],
+      "to": [
+        8.65,
+        20,
+        8.65
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            4,
+            3,
+            15
+          ],
+          "texture": "#layer0"
+        },
+        "east": {
+          "uv": [
+            1,
+            4,
+            3,
+            15
+          ],
+          "texture": "#layer0"
+        },
+        "south": {
+          "uv": [
+            1,
+            4,
+            3,
+            15
+          ],
+          "texture": "#layer0"
+        },
+        "west": {
+          "uv": [
+            1,
+            4,
+            3,
+            15
+          ],
+          "texture": "#layer0"
+        },
+        "down": {
+          "uv": [
+            0,
+            14,
+            2,
+            16
+          ],
+          "texture": "#layer0"
+        }
+      }
+    },
+    {
+      "name": "crown_base",
+      "from": [
+        6.0,
+        19.5,
+        6.0
+      ],
+      "to": [
+        10.0,
+        21.0,
+        10.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        },
+        "east": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        },
+        "south": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        },
+        "west": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        },
+        "up": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        },
+        "down": {
+          "uv": [
+            4,
+            6,
+            8,
+            8
+          ],
+          "texture": "#layer0"
+        }
+      }
+    },
+    {
+      "name": "crystal_orb",
+      "from": [
+        6.5,
+        21.2,
+        6.5
+      ],
+      "to": [
+        9.5,
+        24.5,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        },
+        "east": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        },
+        "south": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        },
+        "west": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        },
+        "up": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        },
+        "down": {
+          "uv": [
+            11,
+            1,
+            15,
+            5
+          ],
+          "texture": "#layer0"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        2.0,
+        1.0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        2.0,
+        1.0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -10,
+        85,
+        0
+      ],
+      "translation": [
+        1.5,
+        1.5,
+        0.5
+      ],
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -10,
+        -85,
+        0
+      ],
+      "translation": [
+        1.5,
+        1.5,
+        0.5
+      ],
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    "ground": {
+      "rotation": [
+        35,
+        0,
+        35
+      ],
+      "translation": [
+        0,
+        3.5,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    }
+  }
+}

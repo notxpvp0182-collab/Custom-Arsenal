@@ -1,0 +1,31 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "fixed"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "custom_arsenal:item/thunder_staff_gui"
+        }
+      },
+      {
+        "when": [
+          "ground"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "custom_arsenal:item/thunder_staff_ground"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "custom_arsenal:item/thunder_staff_3d"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "custom_arsenal",
+  "version": "${version}",
+  "name": "Custom Arsenal",
+  "description": "Standalone custom weapons, 3D models, elements, contextual abilities, and custom inventory framework.",
+  "authors": [
+    "Ahmed"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.ahmed.customarsenal.CustomArsenalMod"
+    ],
+    "client": [
+      "com.ahmed.customarsenal.client.CustomArsenalClient"
+    ],
+    "modmenu": [
+      "com.ahmed.customarsenal.client.gui.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

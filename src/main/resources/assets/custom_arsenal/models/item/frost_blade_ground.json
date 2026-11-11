@@ -1,0 +1,6 @@
+{
+  "parent": "custom_arsenal:item/template_3d_blade",
+  "textures": {
+    "layer0": "custom_arsenal:item/frost_blade"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "key.categories.custom_arsenal": "Custom Arsenal",
+  "key.custom_arsenal.ability_1": "Contextual Ability 1 (Primary)",
+  "key.custom_arsenal.ability_2": "Contextual Ability 2 (Secondary)",
+  "key.custom_arsenal.ability_3": "Contextual Ability 3 (Ultimate)",
+  "key.custom_arsenal.shield_ability": "Contextual Shield Ability",
+  "key.custom_arsenal.open_inventory": "Open Custom Arsenal Inventory",
+  "gui.custom_arsenal.title": "Custom Arsenal",
+  "gui.custom_arsenal.tab_button": "Custom Items",
+  "gui.custom_arsenal.tab_tooltip": "Open Custom Arsenal Weapons, Elements & Abilities",
+  "item.custom_arsenal.shadow_sword": "Shadow Sword",
+  "item.custom_arsenal.inferno_sword": "Inferno Sword",
+  "item.custom_arsenal.frost_blade": "Frost Blade",
+  "item.custom_arsenal.thunder_staff": "Thunder Staff",
+  "item.custom_arsenal.void_orb": "Void Orb",
+  "item.custom_arsenal.guardian_shield": "Guardian Shield",
+  "item.custom_arsenal.grappling_hook": "Grappling Hook",
+  "item.custom_arsenal.wind_blade": "Wind Blade",
+  "item.custom_arsenal.poison_dagger": "Poison Dagger",
+  "item.custom_arsenal.light_staff": "Light Staff"
+}
