@@ -2,7 +2,6 @@ package com.ahmed.customarsenal.ability;
 
 import com.ahmed.customarsenal.CustomArsenalMod;
 import com.ahmed.customarsenal.element.CustomElement;
-import com.ahmed.customarsenal.element.ElementRegistry;
 import com.ahmed.customarsenal.util.AssetValidator;
 import com.ahmed.customarsenal.util.CustomParticleManager;
 import net.minecraft.core.BlockPos;
@@ -11,14 +10,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -146,12 +143,8 @@ public final class AbilityRegistry {
                 BlockHitResult hit = level.clip(new ClipContext(eye, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
                 Vec3 impact = hit.getLocation();
                 CustomParticleManager.spawnLine(level, eye.add(0, -0.15, 0), impact, element.particle(), 26);
+                CustomParticleManager.spawnBurst(level, impact, element.particle(), 20, 0.5, 0.1);
 
-                if ("fire".equals(element.id())) {
-                    SmallFireball fb = new SmallFireball(level, player, look);
-                    fb.setPos(eye.x + look.x, eye.y + look.y, eye.z + look.z);
-                    level.addFreshEntity(fb);
-                }
                 AABB box = player.getBoundingBox().expandTowards(look.scale(18.0)).inflate(1.8);
                 for (LivingEntity t : getTargets(level, player, box)) {
                     damageAndApplyElement(level, player, t, element, power);
@@ -161,19 +154,23 @@ public final class AbilityRegistry {
             }
             case "ARROW_BARRAGE" -> {
                 for (int i = -1; i <= 1; i++) {
-                    Arrow arrow = new Arrow(EntityType.ARROW, level);
-                    arrow.setOwner(player);
-                    arrow.setPos(eye.x, eye.y - 0.1, eye.z);
-                    Vec3 dir = look.yRot(i * 0.12f);
-                    arrow.shoot(dir.x, dir.y, dir.z, 3.2f, 0.5f);
-                    arrow.setBaseDamage(power * 0.45);
-                    if ("fire".equals(element.id())) {
-                        arrow.igniteForSeconds(5.0f);
+                    Vec3 dir = look.yRot(i * 0.14f);
+                    Vec3 beamEnd = eye.add(dir.scale(22.0));
+                    CustomParticleManager.spawnLine(level, eye.add(0, -0.1, 0), beamEnd, element.particle(), 22);
+                    Entity arrow = EntityType.ARROW.create(level, EntitySpawnReason.TRIGGERED);
+                    if (arrow != null) {
+                        arrow.setPos(eye.x + dir.x, eye.y - 0.1 + dir.y, eye.z + dir.z);
+                        arrow.setDeltaMovement(dir.scale(2.8));
+                        if ("fire".equals(element.id())) {
+                            arrow.igniteForSeconds(5.0f);
+                        }
+                        level.addFreshEntity(arrow);
                     }
-                    arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                    level.addFreshEntity(arrow);
                 }
-                CustomParticleManager.spawnBurst(level, eye.add(look), element.particle(), 18, 0.3, 0.08);
+                AABB box = player.getBoundingBox().expandTowards(look.scale(20.0)).inflate(2.5);
+                for (LivingEntity t : getTargets(level, player, box)) {
+                    damageAndApplyElement(level, player, t, element, power);
+                }
                 return true;
             }
             case "SPEAR_THROW" -> {
@@ -226,7 +223,6 @@ public final class AbilityRegistry {
                 return true;
             }
             case "ULTIMATE_CATACLYSM" -> {
-                // High-Power Contextual Ultimate ([R]) with element-specific world & combat impact
                 CustomParticleManager.spawnRing(level, pos, element.particle(), 4.0, 28);
                 CustomParticleManager.spawnRing(level, pos, element.particle(), 8.0, 42);
                 CustomParticleManager.spawnSpiral(level, pos, element.particle(), 3.5, 4.0, 40);

@@ -14,10 +14,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Optional;
 
-/**
- * Does NOT register keys into Minecraft's vanilla Controls > Keybinds list.
- * Instead, keys are configured exclusively inside Mod Menu -> Custom Arsenal -> Configure -> KEYBINDS.
- */
 public final class AbilityKeybindManager {
     private static boolean prevUniversalDown = false;
     private static boolean prevSecondaryDown = false;
@@ -40,7 +36,8 @@ public final class AbilityKeybindManager {
         CustomItemConfig cfg = CustomItemConfig.get();
         if (!cfg.enableCustomArsenal) return;
 
-        long window = client.getWindow().getWindow();
+        long window = GLFW.glfwGetCurrentContext();
+        if (window == 0L) return;
 
         boolean univDown = isKeyPressed(window, cfg.universalAbilityKey);
         if (univDown && !prevUniversalDown) {
@@ -75,7 +72,7 @@ public final class AbilityKeybindManager {
     private static void handleContextualKeyPress(Minecraft client, String keySlot) {
         Optional<AbilityManager.ResolvedAbility> resolvedOpt = AbilityManager.resolveContextualAbility(client.player, keySlot);
         if (resolvedOpt.isEmpty()) {
-            return; // Do nothing if no compatible Custom Arsenal item is held in the required hand
+            return;
         }
         AbilityManager.ResolvedAbility resolved = resolvedOpt.get();
         long now = client.level.getGameTime();
